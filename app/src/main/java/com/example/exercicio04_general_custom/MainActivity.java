@@ -3,6 +3,7 @@ package com.example.exercicio04_general_custom;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView textQuantidade;
+    TextView textQuantidade, resultado;
     SeekBar quantidade;
     Button lancar;
     EditText valor1, valor2, valor3, valor4, valor5;
@@ -32,12 +33,17 @@ public class MainActivity extends AppCompatActivity {
         valor3 = findViewById(R.id.valor3);
         valor4 = findViewById(R.id.valor4);
         valor5 = findViewById(R.id.valor5);
+        resultado = findViewById(R.id.resultado);
 
 
         quantidade.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                textQuantidade.setText("Quantidade ("+i+")");
+                if(i==1){
+                    textQuantidade.setText(i + " Dado");
+                }else{
+                    textQuantidade.setText(i + " Dados");
+                }
             }
 
             @Override
@@ -80,12 +86,52 @@ public class MainActivity extends AppCompatActivity {
         String jogadas = "", maiorPonto = "";
         int pontos = 0;
 
-        for (int i = 0; i < 5; i++) {
+        //adicionar valores dos campos
+        if(valor1.getVisibility()==View.VISIBLE && !valor1.getText().toString().isEmpty()){
+            valores.add(Integer.parseInt(valor1.getText().toString()));
+        }else{
+            resultado.setText("Informe o valor do 1º Campo!");
+            return;
+        }
+        if(valor2.getVisibility()==View.VISIBLE && !valor2.getText().toString().isEmpty()){
+            valores.add(Integer.parseInt(valor2.getText().toString()));
+        }else if(valor2.getVisibility()==View.VISIBLE && valor2.getText().toString().isEmpty()){
+            resultado.setText("Informe o valor do 2º Campo!");
+            return;
+        }
+        if(valor3.getVisibility()==View.VISIBLE && !valor3.getText().toString().isEmpty()){
+            valores.add(Integer.parseInt(valor3.getText().toString()));
+        }else if(valor3.getVisibility()==View.VISIBLE && valor3.getText().toString().isEmpty()){
+            resultado.setText("Informe o valor do 3º Campo!");
+            return;
+        }
+        if(valor4.getVisibility()==View.VISIBLE && !valor4.getText().toString().isEmpty()){
+            valores.add(Integer.parseInt(valor4.getText().toString()));
+        }else if(valor4.getVisibility()==View.VISIBLE && valor4.getText().toString().isEmpty()){
+            resultado.setText("Informe o valor do 4º Campo!");
+            return;
+        }
+        if(valor5.getVisibility()==View.VISIBLE && !valor5.getText().toString().isEmpty()){
+            valores.add(Integer.parseInt(valor5.getText().toString()));
+        }else if(valor5.getVisibility()==View.VISIBLE && valor5.getText().toString().isEmpty()){
+            resultado.setText("Informe o valor do 5º Campo!");
+            return;
+        }
+
+        //preenche o restante com numeros random
+        for (int i = quantidade.getProgress()+1; i <= 5; i++) {
             valores.add(random.nextInt(6) + 1);
         }
-        Collections.sort(valores);
+
+        //mostrando ordem de jogada original e ordenada
+        jogadas="Jogada por ordem de dado.\n\n";
         for (int i = 0; i < 5; i++) {
             jogadas += "(" + String.valueOf(i + 1) + ")Dado - Valor: " + String.valueOf(valores.get(i) + "\n");
+        }
+        jogadas+="\nOrdem de valores (menor - maior)\n\n";
+        Collections.sort(valores);
+        for (int i = 0; i < 5; i++) {
+            jogadas += "Valor: " + String.valueOf(valores.get(i) + "\n");
         }
 
         //verificar pontos
